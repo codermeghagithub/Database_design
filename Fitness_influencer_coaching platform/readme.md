@@ -20,4 +20,3 @@ This is not just a “shop” problem. You should think carefully about how thri
 * diet_plans
 * progress
 * checkin
-* trainer_notes
