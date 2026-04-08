@@ -1,0 +1,102 @@
+department [color:yellow] {
+  id uuid pk
+  name varchar(60)
+  location varchar(100) room 
+
+}
+
+patient [icon: users, color: black] {
+  patient_id uuid  pk
+  name varchar(40)
+  email varchar(255) unique
+  phone_num varchar(20)
+  serial_num varchar(2)
+  dob date 
+blood_group enum("A+", "A-", "B+", "B-" , "AB+", "AB-" , "O+", "O-")
+address text
+registered_at timestamp
+}
+
+doctor [icon: user, color: blue] {
+doctor_id uuid pk
+department_id uuid fk
+  name varchar(40)
+  specialization varchar(40)
+  email varchar(255) unique
+  phone_num varchar(20)
+  status enum(active,inactive)
+}
+ 
+
+tests  [icon: message-circle, color: green] {
+  test_id uuid pk
+  name varchar(60)
+  description text 
+  price decimal(10,2)
+  sample_type varchar(50)
+  turnaround_hours int 
+}
+
+prescribed_test{
+  pres_id uuid pk
+  consultations_id uuid fk
+  test_id uuid fk 
+  status enum(ordered, sample_collected, completed)
+  prescribed_at TIMESTAMP
+}
+
+Payment method [icon: payment, color: purple] {
+  pay_id uuid pk
+  patient_id UUID FK 
+  appointment_id UUID fk
+  amount decimal(10,2)
+  payment_method enum(card, upi, netbanking, wallet)
+  payment_status enum(pending, success, failed, refunded)
+  gateway_reference varchar(255)
+  paid_at timestamp
+  created_at timestamp
+
+}
+
+appointments [icon: lock, color: yellow] {
+  appointment_id uuid pk
+  patient_id uuid fk
+  doctor_id uuid fk
+  scheduled_at TIMESTAMP
+  status ENUM(pending, confirmed, completed, cancelled)
+  notes TEXT 
+ created_at TIMESTAMP
+
+}
+consultations [icon: lock, color: green] {
+  consultations_id uuid pk
+  appointment_id  uuid fk
+  patient_id uuid fk
+  doctor_id uuid fk
+  diagnosis text
+  prescription text
+  notes text
+  consulted_at timestamp
+}
+
+reports{
+  r_id uuid pk
+  name varchar (40)
+  pres_id  UUID FK 
+  result_summary  TEXT 
+  findings text
+  file_url varchar(255)
+  lab_technician VARCHAR(100)
+  generated_at TIMESTAMP
+}
+
+department < doctor 
+doctor < appointments
+patient < appointments
+appointments - consultations 
+consultations < prescribed_test 
+tests < prescribed_test 
+prescribed_test - reports 
+patient < Payment method 
+appointments - Payment method 
+

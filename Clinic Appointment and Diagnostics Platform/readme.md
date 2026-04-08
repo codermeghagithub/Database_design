@@ -17,3 +17,4 @@ This assignment is not about making a hospital-level giant system. Keep it focus
 * appointments
 * consultations
 * reports
+
