@@ -1,0 +1,113 @@
+vehicle [icon: car, color: yellow] {
+vehicle_id uuid pk
+license_plate VARCHAR(20) NOT NULL UNIQUE
+  color VARCHAR(30)
+  make VARCHAR(50) 
+  model VARCHAR(50)
+  vehicle_type_id UUID FK
+  access_id UUID FK
+  registered_at TIMESTAMP 
+}
+
+ vehicle_types[ color: yellow] {
+  vehicle_type_id UUID pk 
+  type_name VARCHAR(30) NOT NULL, UNIQUE 
+  description VARCHAR(100)
+  size_class VARCHAR(20)
+}
+
+
+access_category[ color: yellow] {
+  access_id UUID PK 
+  category_name VARCHAR(50) NOT NULL
+  description VARCHAR(100)  
+  is_reserved BOOLEAN 
+}
+
+parking_zone[ color: yellow]  {
+  z_id  UUID PK
+  zone_name VARCHAR(30)
+  zone_level VARCHAR(20) NOT NULL
+  total_spots INT NOT NULL
+  available_spots INT
+}
+
+parking_spot [ color: yellow] {
+  spot_id UUID PK
+  z_id UUID FK
+spot_type_id UUID FK
+  spot_number VARCHAR(20)
+  is_occupied BOOLEAN
+}
+
+spot_type[ color: yellow] {
+  spot_type_id UUID PK 
+  type_name VARCHAR(50) NOT NULL UNIQUE
+  is_reserved BOOLEAN
+  ev_charging BOOLEAN
+  suitable_for VARCHAR(50)
+}
+ spot_allocation[ color: yellow]  {
+  allocation_id UUID PK
+  spot_id UUID FK  
+session_id UUID FK  
+vehicle_id UUID FK 
+allocated_at TIMESTAMP
+  released_at TIMESTAMP
+}
+
+parking_ticket [ color: yellow] {
+  ticket_id UUID PK
+  vehicle_id UUID FK
+  session_id UUID FK
+  ticket_number VARCHAR(20) NOT NULL UNIQUE
+  issued_by VARCHAR(50)
+}
+
+parking_sessions [ color: yellow] {
+  session_id  uuid pk
+  vehicle_id UUID FK 
+  spot_id UUID FK 
+  start_time TIMESTAMP NOT NULL
+  end_time TIMESTAMP
+  duration_minutes INT
+  status VARCHAR(20)
+  event_day DATE
+}
+
+payment [ color: yellow] {
+  payment_id UUID PK
+  ticket_id UUID FK
+  session_id UUID fk
+  amount DECIMAL(10,2)
+  payment_method VARCHAR(20)
+  payment_status VARCHAR(20)
+  payment_time TIMESTAMP
+}
+
+// one vehicle have many type
+vehicle.vehicle_type_id  > vehicle_types.vehicle_type_id
+//  access categore have many vehicle
+vehicle.access_id  >access_category.access_id
+// one parking zone can contain many parking spots
+
+parking_zone.z_id  <parking_spot.z_id
+// one spot type can be assigned to many parking spots
+parking_spot.spot_type_id  > spot_type.spot_type_id
+// one vehicle can have many parking sessions
+
+vehicle.vehicle_id  < parking_sessions.vehicle_id
+// one parking spot can be used in many parking sessions
+
+parking_spot.spot_id  < parking_sessions.spot_id
+// one parking session generates one parking ticket
+
+parking_sessions.session_id - parking_ticket.session_id
+// one parking session can have multiple payments 
+
+parking_sessions.session_id  < payment.session_id
+// one parking ticket can   have one payment 
+parking_ticket.ticket_id-payment.ticket_id
+
+
+
