@@ -1,0 +1,92 @@
+building[icon: building, color: blue] {
+  building_id int pk 
+  name varchar(20)
+  building_number int 
+  total_floor int 
+  address varchar(100)
+}
+
+floor[icon: f5, color: blue] {
+  floor_id int pk
+  building_id int fk 
+  floor_number int
+  label varchar(10)
+  is_lobby boolean
+  is_accessible boolean
+  elevator_stop boolean
+}
+
+elevator[icon:s] {
+  elevator_id int pk
+  shaft_id int fk
+  model varchar(10)
+  capacity_kg int 
+  status varchar(10)
+
+}
+
+elevator_shaft[icon:p] {
+  shaft_id int pk
+  building_id int fk
+  shaft_number int
+}
+
+floor_requests [icon: message-circle, color: green] {
+ request_id int pk 
+ floor_id int fk 
+ direction varchar(10)
+ requested_at timestamp
+}
+
+ride_assignment[icon:s ride_logs, color: green] {
+  assignment_id int pk 
+  request_id int fk 
+  elevator_id int fk 
+  assigned_at timestamp
+}
+ride_log[color:yellow]{
+ride_log_id int pk
+assignment_id int fk 
+origin_floor int 
+destination_floor int 
+start_time timestamp
+end_time timestamp
+}
+elevator_status{
+ele_status_id int pk
+elevator_id int fk
+floor_position int 
+direction varchar(10)
+door_status varchar(10)
+recorded_at timestamp
+
+}
+elevator_floor_map {
+  id int pk
+  elevator_id int fk
+  floor_id int fk
+}
+maintenance_tracking{
+tracking_id int pk
+elevator_id int fk
+issue_type varchar(10)
+status varchar(10)
+reported_at timestamp
+resolved_at timestamp
+}
+building.building_id <floor.building_id
+building.building_id <elevator_shaft.building_id 
+elevator.elevator_id< maintenance_tracking.elevator_id
+
+elevator.elevator_id < elevator_status.elevator_id 
+elevator.shaft_id -elevator_shaft.shaft_id
+floor.floor_id < floor_requests.floor_id
+
+floor_requests.request_id - ride_assignment.request_id 
+
+elevator.elevator_id < ride_assignment.elevator_id
+
+elevator.elevator_id < elevator_floor_map.elevator_id
+floor.floor_id < elevator_floor_map.floor_id
+
+ride_assignment.assignment_id -ride_log.assignment_id
