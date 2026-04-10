@@ -9,5 +9,48 @@ Each building can contain multiple elevator shafts. Each shaft contains one elev
 
 
 ### entities
+1. building
+2. floor
+3. elevator
+4. elevator_shaft
+5. floor_requests
+6. ride_assignment
+7. ride_log
+8. elevator_status
+9. elevator_floor_map
+10. maintenance_tracking
 
+
+### Relationships
+**One building acn contain  many floor**
+building.building_id <floor.building_id  
+
+**one bilding can contain many elevator_shaft**
+building.building_id <elevator_shaft.building_id
+
+**one elevator have many  maintenance_tracking**
+elevator.elevator_id< maintenance_tracking.elevator_id
+**one elevator has  many elevator_status**
+elevator.elevator_id < elevator_status.elevator_id 
+
+**one elevatorhave one elevator_shaft**
+elevator.shaft_id - elevator_shaft.shaft_id
+
+**one floor has many requests**
+floor.floor_id < floor_requests.floor_id
+
+**one request has one ride assignment**
+floor_requests.request_id - ride_assignment.request_id 
+ 
+ **one elevator handles many assignments**
+elevator.elevator_id < ride_assignment.elevator_id
+
+**one elevator serves many floors**
+elevator.elevator_id < elevator_floor_map.elevator_id
+
+**one floor is served by many elevators**
+floor.floor_id < elevator_floor_map.floor_id
+
+**one assignment generates one ride log**
+ride_assignment.assignment_id -ride_log.assignment_id
 
